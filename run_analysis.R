@@ -1,7 +1,3 @@
-################################################################################
-## Information
-##
-
 library(data.table)
 
 ################################################################################
@@ -32,6 +28,12 @@ fetch_data_set <- function(dataSetBasePath = const.dataSetBasePath,
     dateDownloaded
 }
 
+## Loads the features and attempts to make the feature names a bit more
+## human readable
+## Args:
+##   dataSetBasePath: the base location for the extracted project data
+## Returns:
+##   betterNamedFeatures: the features table after making it more human readable
 load_features <- function(dataSetBasePath = const.dataSetBasePath) {
     featuresAsTable <- read.table(paste0(dataSetBasePath, "/", 
                                          const.featuresFilename))
@@ -49,12 +51,26 @@ load_features <- function(dataSetBasePath = const.dataSetBasePath) {
     betterNamedFeatures
 }
 
+## Loads activity labels
+## Args:
+##   dataSetBasePath: the base location for the extracted project data
+## Returns:
+##   activityLabelsAsTable: the activity labels as a table
 load_activity_labels <- function(dataSetBasePath = const.dataSetBasePath) {
     activityLabelsAsTable <- read.table(paste0(dataSetBasePath, "/", 
                                                const.activityLabelsFilename))
     activityLabelsAsTable
 }
 
+## Loads measurements for a particular data set (train or test), sets the column
+## names to the features returned by the load_features() function and filters out 
+## all the columns that are not mean or std measurements
+## Args:
+##   dataSetBasePath: the base location for the extracted project data
+##   dataSetName: the name of the data set to load the measurements for
+## Returns:
+##   measurements: the filtered measurements for a data set as a table 
+##                 with features as the column names
 load_data_set_measurements <- function(dataSetBasePath = const.dataSetBasePath, 
                                        dataSetName) {
     # construct the filepath for the file that contains the measurements for this
@@ -76,6 +92,13 @@ load_data_set_measurements <- function(dataSetBasePath = const.dataSetBasePath,
     measurements
 }
 
+## Loads subjects for a particular data set (train or test) and converts them
+## to a factor
+## Args:
+##   dataSetBasePath: the base location for the extracted project data
+##   dataSetName: the name of the data set to load the subjects for
+## Returns:
+##   subjects: the subjects for a data set as a factor
 load_data_set_subjects <- function(dataSetBasePath = const.dataSetBasePath, 
                                    dataSetName) {
     # construct the filepath for the file that contains the subjects for this
@@ -90,6 +113,14 @@ load_data_set_subjects <- function(dataSetBasePath = const.dataSetBasePath,
     subjects
 }
 
+## Loads activities for a particular data set (train or test), sets the column 
+## names to the activity labels returned by the load_activity_labels() function 
+## and converts them to a factor
+## Args:
+##   dataSetBasePath: the base location for the extracted project data
+##   dataSetName: the name of the data set to load the activities for
+## Returns:
+##   activities: the activities for a data set as a factor
 load_data_set_activities <- function(dataSetBasePath = const.dataSetBasePath, 
                                      dataSetName) {
     # construct the filepath for the file that contains the activities for this
@@ -107,6 +138,18 @@ load_data_set_activities <- function(dataSetBasePath = const.dataSetBasePath,
     activities
 }
 
+## Invokes previously defined methods to:
+##  - fetch data
+##  - load subjects
+##  - load activities
+##  - load measurements
+## And then combines their results to a single table
+## Finally it ensures that the column names for column 1 and 2 are set correctly
+## Args:
+##   dataSetBasePath: the base location for the extracted project data
+##   dataSetName: the name of the data set to load
+## Returns:
+##   combined: the combined data set
 load_data_set <- function(dataSetBasePath = const.dataSetBasePath, 
                           dataSetName) {
     # fetch data
@@ -124,6 +167,12 @@ load_data_set <- function(dataSetBasePath = const.dataSetBasePath,
     combined
 }
 
+## Generates the tidy data (part 1) as required 
+## by combining the tables for the train data set and the test data set
+## Args:
+##   dataSetBasePath: the base location for the extracted project data
+## Returns:
+##   tidy_data_1: the tidy data (part 1) as required
 tidy_data_1 <- function(dataSetBasePath = const.dataSetBasePath) {
     if (!file.exists("tidy_data_1.txt")) {
         # load the train data set
@@ -141,6 +190,15 @@ tidy_data_1 <- function(dataSetBasePath = const.dataSetBasePath) {
     tidy_data_1
 }
 
+## Generates the tidy data (part 2) as required by calling 
+## the tidy_data_1() function and then:
+##  - converting the data frame to a data table
+##  - using lapply to apply the mean function while
+## grouping by "Subject" and "Activity"
+## Args:
+##   dataSetBasePath: the base location for the extracted project data
+## Returns:
+##   tidy_data_2: the tidy data (part 2) as required
 tidy_data_2 <- function(dataSetBasePath = const.dataSetBasePath) {
     if (!file.exists("tidy_data_2.txt")) {
         # use the tidy_data_1 function to get the tidy data as it stands
