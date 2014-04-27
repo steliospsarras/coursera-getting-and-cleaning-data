@@ -121,7 +121,6 @@ load_data_set <- function(dataSetBasePath = const.dataSetBasePath,
     combined <- cbind(subjects, activities, measurements)
     # make column names better
     colnames(combined)[1:2] <- const.subjectActivityColnames
-    # TODO
     combined
 }
 
