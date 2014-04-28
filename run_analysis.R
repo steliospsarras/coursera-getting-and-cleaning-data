@@ -33,7 +33,7 @@ fetch_data_set <- function(dataSetBasePath = const.dataSetBasePath,
 ## Args:
 ##   dataSetBasePath: the base location for the extracted project data
 ## Returns:
-##   betterNamedFeatures: the features table after making it more human readable
+##   betterNamedFeatures: the features list after making it more human readable
 load_features <- function(dataSetBasePath = const.dataSetBasePath) {
     featuresAsTable <- read.table(paste0(dataSetBasePath, "/", 
                                          const.featuresFilename))
